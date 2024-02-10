@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestsBot.Telegram", "QuestsBot.Telegram\QuestsBot.Telegram.csproj", "{5F7D97FC-2839-4200-9B9D-24C470FD5F1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestsBot.Kernel", "src\QuestsBot.Kernel\QuestsBot.Kernel.csproj", "{D75DBA38-6758-42D7-9256-B4E51AF75797}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F7D97FC-2839-4200-9B9D-24C470FD5F1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F7D97FC-2839-4200-9B9D-24C470FD5F1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F7D97FC-2839-4200-9B9D-24C470FD5F1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F7D97FC-2839-4200-9B9D-24C470FD5F1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D75DBA38-6758-42D7-9256-B4E51AF75797}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D75DBA38-6758-42D7-9256-B4E51AF75797}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D75DBA38-6758-42D7-9256-B4E51AF75797}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D75DBA38-6758-42D7-9256-B4E51AF75797}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
