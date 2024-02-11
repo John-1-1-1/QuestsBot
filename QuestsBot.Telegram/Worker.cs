@@ -1,19 +1,89 @@
+using QuestsBot.Telegram.Services;
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+
 namespace QuestsBot.Telegram;
 
-public class Worker : BackgroundService {
-    private readonly ILogger<Worker> _logger;
+public class Worker(ILogger<Worker> logger, IServiceProvider serviceProvider) : BackgroundService {
+    private readonly DataBaseService _dataBaseService =
+        serviceProvider.GetService<DataBaseService>() ?? 
+        throw new Exception("DataBaseService is null");
+    
+    private readonly QuestService _questService =
+        serviceProvider.GetService<QuestService>() ?? 
+        throw new Exception("QuestService is null");
+    
+    private readonly TelegramBotService _telegramBotService = 
+        serviceProvider.GetService<TelegramBotService>() ?? 
+        throw new Exception("TelegramBotService is null");
 
-    public Worker(ILogger<Worker> logger) {
-        _logger = logger;
+    protected override Task ExecuteAsync(CancellationToken stoppingToken) {
+        logger.LogInformation("TelegramWorker running at: {time}", DateTimeOffset.Now);
+        _telegramBotService.Client.StartReceiving(UpdateHandler, ErrorHandler,
+            _telegramBotService.ReceiverOptions, stoppingToken);
+        return Task.CompletedTask;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
-        while (!stoppingToken.IsCancellationRequested) {
-            if (_logger.IsEnabled(LogLevel.Information)) {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+    private Task ErrorHandler(ITelegramBotClient arg1, Exception arg2, CancellationToken arg3) {
+        throw new NotImplementedException();
+    }
+
+    private Task UpdateHandler(ITelegramBotClient botClient,
+        Update update, CancellationToken cancellationToken) {
+
+        if (update.Type == UpdateType.Message) {
+            
+            var user = _dataBaseService.GetUserByChatId(update.Message.Chat.Id);
+            
+            if (update.Message?.Text == "/start") {
+                var state = _dataBaseService.CreateUser(update.Message.Chat.Id);
+                if (state == DataBaseUserState.Exist) {
+                    _telegramBotService.Client.SendTextMessageAsync(
+                        update.Message.Chat.Id, "Вы уже зарегестрированы");
+                }
+                else {
+                    _telegramBotService.Client.SendTextMessageAsync(
+                        update.Message.Chat.Id, "Вы успешно зарегестрированы");
+                }
+
+                return Task.CompletedTask;
+            }
+            
+            if (update.Message?.Text == "/help") {
+                
+                
+                return Task.CompletedTask;
             }
 
-            await Task.Delay(1000, stoppingToken);
+            if (update.Message?.Text == "/restart") {
+                user.NumberQuestion = -1;
+                _dataBaseService.UpdateUser(user);
+                return Task.CompletedTask;
+            }
+
+           
+            if (user == null) {
+                // написать боту start
+                return Task.CompletedTask;
+            }
+           
+            var telegramScriptUnit =
+                _questService.GetTextUnitByNumQuestion(user.NumberQuestion);
+            
+            if (update.Message.Text == telegramScriptUnit.TrueAnswer) {
+                user.NumberQuestion += 1;
+            }
+
+            telegramScriptUnit =
+                _questService.GetTextUnitByNumQuestion(user.NumberQuestion);
+            
+            _dataBaseService.UpdateUser(user);
+
+            _telegramBotService.Client.SendTextMessageAsync(
+                update.Message.Chat.Id, telegramScriptUnit.Question);
+
         }
+        return Task.CompletedTask;
     }
 }

@@ -9,12 +9,29 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Telegram.Bot">
+        <HintPath>..\..\..\.nuget\packages\telegram.bot\20.0.0-alpha.1\lib\net6.0\Telegram.Bot.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\src\QuestsBot.Kernel\QuestsBot.Kernel.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="quest.json" />
+      <None Include="token.json" />
     </ItemGroup>
 </Project>
