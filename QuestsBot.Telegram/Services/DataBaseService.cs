@@ -61,6 +61,7 @@ public class DataBaseService {
     public void UpdateUser(TelegramUser user) {
         try {
             _applicationContext.TelegramUser.Update(user);
+            _applicationContext.SaveChanges();
         }
         catch {
             _logger.LogError("UpdateUser: ApplicationContext incorrect");

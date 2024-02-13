@@ -20,7 +20,7 @@ public class QuestService {
         if (numQuestion >= _telegramScriptUnits.Quest.Count) {
             return _telegramScriptUnits.EndMessage;
         }
-        return _telegramScriptUnits.Quest.Skip(numQuestion - 1).First();
+        return _telegramScriptUnits.Quest.Skip(numQuestion).First();
     }
 }
 
@@ -29,4 +29,3 @@ public class quest {
     public ICollection<TelegramScriptUnit> Quest{ get; set; }
     public TelegramScriptUnit EndMessage{ get; set; }
 }
-

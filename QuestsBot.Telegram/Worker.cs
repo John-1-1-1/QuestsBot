@@ -46,8 +46,6 @@ public class Worker(ILogger<Worker> logger, IServiceProvider serviceProvider) : 
                     _telegramBotService.Client.SendTextMessageAsync(
                         update.Message.Chat.Id, "Вы успешно зарегестрированы");
                 }
-
-                return Task.CompletedTask;
             }
             
             if (update.Message?.Text == "/help") {
@@ -59,7 +57,6 @@ public class Worker(ILogger<Worker> logger, IServiceProvider serviceProvider) : 
             if (update.Message?.Text == "/restart") {
                 user.NumberQuestion = -1;
                 _dataBaseService.UpdateUser(user);
-                return Task.CompletedTask;
             }
 
            
@@ -73,17 +70,25 @@ public class Worker(ILogger<Worker> logger, IServiceProvider serviceProvider) : 
             
             if (update.Message.Text == telegramScriptUnit.TrueAnswer) {
                 user.NumberQuestion += 1;
+                _dataBaseService.UpdateUser(user);
             }
 
             telegramScriptUnit =
                 _questService.GetTextUnitByNumQuestion(user.NumberQuestion);
             
-            _dataBaseService.UpdateUser(user);
-
             _telegramBotService.Client.SendTextMessageAsync(
                 update.Message.Chat.Id, telegramScriptUnit.Question);
+            
+            if (telegramScriptUnit.PathToImage != "") {
+                var fs = System.IO.File.OpenRead(telegramScriptUnit.PathToImage);
+                _telegramBotService.Client.SendPhotoAsync( 
+                    chatId: update.Message.Chat,
+                    photo: InputFile.FromStream(fs)
+                );
+            }
 
         }
         return Task.CompletedTask;
     }
 }
+    

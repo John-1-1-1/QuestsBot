@@ -6,6 +6,6 @@ public class TelegramScriptUnit {
     public string TrueAnswer{ get; set; }
 
     public ICollection<string> ListAnswers{ get; set; }
-    
-    public string PathToImage{ get; set; }
+
+    public string PathToImage { get; set; } = string.Empty;
 }
