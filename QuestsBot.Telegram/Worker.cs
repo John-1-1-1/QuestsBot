@@ -34,7 +34,7 @@ public class Worker(ILogger<Worker> logger, IServiceProvider serviceProvider) : 
 
         if (update.Type == UpdateType.Message) {
             
-            var user = _dataBaseService.GetUserByChatId(update.Message.Chat.Id);
+           
             
             if (update.Message?.Text == "/start") {
                 var state = _dataBaseService.CreateUser(update.Message.Chat.Id);
@@ -54,17 +54,18 @@ public class Worker(ILogger<Worker> logger, IServiceProvider serviceProvider) : 
                 return Task.CompletedTask;
             }
 
-            if (update.Message?.Text == "/restart") {
-                user.NumberQuestion = -1;
-                _dataBaseService.UpdateUser(user);
-            }
-
-           
+            var user = _dataBaseService.GetUserByChatId(update.Message.Chat.Id);
+            
             if (user == null) {
                 // написать боту start
                 return Task.CompletedTask;
             }
            
+            if (update.Message?.Text == "/restart") {
+                user.NumberQuestion = -1;
+                _dataBaseService.UpdateUser(user);
+            }
+            
             var telegramScriptUnit =
                 _questService.GetTextUnitByNumQuestion(user.NumberQuestion);
             
